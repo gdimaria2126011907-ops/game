@@ -8,7 +8,7 @@ namespace ConsoleGuessingGame
         {
             bool playAgain = true;
             Console.WriteLine("====================================");
-            Console.WriteLine("    WELCOME TO THE GUESSING GAME    ");
+            Console.WriteLine("    WELCOME TO THE  GAME    ");
             Console.WriteLine("====================================");
 
             while (playAgain)
