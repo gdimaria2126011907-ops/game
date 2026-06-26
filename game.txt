@@ -1,0 +1,79 @@
+using System;
+
+namespace ConsoleGuessingGame
+{
+    class Program
+    {
+        static void Main(string[] sender)
+        {
+            bool playAgain = true;
+            Console.WriteLine("====================================");
+            Console.WriteLine("    WELCOME TO THE GUESSING GAME    ");
+            Console.WriteLine("====================================");
+
+            while (playAgain)
+            {
+                PlayGameRound();
+
+                Console.WriteLine("\nWould you like to play another round? (Y/N): ");
+                string response = Console.ReadLine()?.Trim().ToUpper();
+                if (response != "Y" && response != "YES")
+                {
+                    playAgain = false;
+                }
+            }
+
+            Console.WriteLine("\nThank you for playing! Press any key to exit.");
+            Console.ReadKey();
+        }
+
+        static void PlayGameRound()
+        {
+            Random random = new Random();
+            int targetNumber = random.Next(1, 101); // Generates a number between 1 and 100
+            int numberOfAttempts = 0;
+            bool hasGuessedCorrectly = false;
+
+            Console.WriteLine("\nI have thought of a number between 1 and 100.");
+            Console.WriteLine("Can you guess what it is?");
+
+            while (!hasGuessedCorrectly)
+            {
+                Console.Write("Enter your guess: ");
+                string input = Console.ReadLine();
+
+                // Validate that the user entered a valid number
+                if (!int.TryParse(input, out int playerGuess))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid input. Please enter a whole number.");
+                    Console.ResetColor();
+                    continue;
+                }
+
+                numberOfAttempts++;
+
+                if (playerGuess < targetNumber)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Too low! Try a higher number.");
+                    Console.ResetColor();
+                }
+                else if (playerGuess > targetNumber)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Too high! Try a lower number.");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    hasGuessedCorrectly = true;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"\nCORRECT! 🎉 The number was {targetNumber}.");
+                    Console.WriteLine($"It took you {numberOfAttempts} attempts.");
+                    Console.ResetColor();
+                }
+            }
+        }
+    }
+}

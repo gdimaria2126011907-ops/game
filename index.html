@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Console Guessing Game</title>
+    <style>
+        /* CSS Styling */
+        body {
+            background-color: #0c0f12;
+            color: #455026;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .console-box {
+            background-color: #151b21;
+            border: 2px solid #00ff66;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 550px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.15);
+        }
+
+        .header {
+            border-bottom: 1px dashed #00ff66;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        p {
+            margin: 5px 0;
+            color: #88a090;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            background-color: #0c0f12;
+            border: 1px solid #00ff66;
+            color: #00ff66;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        /* Removess default arrow spinners from number input */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        button {
+            background-color: #00ff66;
+            color: #0c0f12;
+            border: none;
+            padding: 12px 24px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #00cc52;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+        }
+
+        #resetBtn {
+            background-color: #ff3366;
+            color: #fff;
+            display: none;
+            width: 100%;
+        }
+
+        #resetBtn:hover {
+            background-color: #cc2452;
+            box-shadow: 0 0 10px rgba(255, 51, 102, 0.4);
+        }
+
+        .output-panel {
+            background-color: #0c0f12;
+            border: 1px solid #223328;
+            border-radius: 4px;
+            padding: 15px;
+            min-height: 80px;
+            line-height: 1.6;
+        }
+
+        .status-text {
+            margin: 0;
+        }
+
+        /* Dynamic Feedback Text Colors */
+        .color-alert { color: #ff3366; }
+        .color-warn { color: #ffcc00; }
+        .color-success { color: #00ff66; }
+    </style>
+</head>
+<body>
+
+    <div class="console-box">
+        <div class="header">
+            <h1>SYSTEM://GUESS_GAME.EXE</h1>
+            <p>Target initialized: Number between 1 and 100</p>
+        </div>
+
+        <div class="game-controls">
+            <input type="number" id="playerGuess" placeholder="Enter your guess..." min="1" max="100" autocomplete="off">
+            <button id="submitBtn" onclick="checkGuess()">SUBMIT</button>
+        </div>
+
+        <button id="resetBtn" onclick="startNewGame()">PLAY AGAIN</button>
+
+        <div class="output-panel">
+            <p id="feedback" class="status-text">Awaiting input... Type a number and press submit.</p>
+        </div>
+    </div>
+
+    <script>
+        // Game State Variables
+        let targetNumber;
+        let attemptsCount;
+
+        function startNewGame() {
+            // Generate a random number between 1 and 100
+            targetNumber = Math.floor(Math.random() * 100) + 1;
+            attemptsCount = 0;
+
+            // Reset UI States
+            document.getElementById("playerGuess").value = "";
+            document.getElementById("playerGuess").disabled = false;
+            document.getElementById("submitBtn").style.display = "block";
+            document.getElementById("resetBtn").style.display = "none";
+            
+            const feedback = document.getElementById("feedback");
+            feedback.textContent = "New target locked. Guess a number between 1 and 100.";
+            feedback.className = "status-text"; 
+            
+            document.getElementById("playerGuess").focus();
+        }
+
+        function checkGuess() {
+            const inputField = document.getElementById("playerGuess");
+            const feedback = document.getElementById("feedback");
+            const userGuess = parseInt(inputField.value);
+
+            // Validation check
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                feedback.textContent = "ERROR: Please input a valid integer between 1 and 100.";
+                feedback.className = "status-text color-alert";
+                return;
+            }
+
+            attemptsCount++;
+
+            if (userGuess < targetNumber) {
+                feedback.textContent = `[Attempt ${attemptsCount}]: ${userGuess} is TOO LOW. Try a higher parameter.`;
+                feedback.className = "status-text color-warn";
+            } else if (userGuess > targetNumber) {
+                feedback.textContent = `[Attempt ${attemptsCount}]: ${userGuess} is TOO HIGH. Try a lower parameter.`;
+                feedback.className = "status-text color-warn";
+            } else {
+                feedback.textContent = `SUCCESS 🎉 Target confirmed: ${targetNumber}. Deconstructed in ${attemptsCount} attempts!`;
+                feedback.className = "status-text color-success";
+                
+                // End game visual state switch
+                inputField.disabled = true;
+                document.getElementById("submitBtn").style.display = "none";
+                document.getElementById("resetBtn").style.display = "block";
+            }
+
+            // Clean input field for next guess
+            inputField.value = "";
+            inputField.focus();
+        }
+
+        // Run game setup immediately when page loads
+        window.onload = startNewGame;
+
+        // Allow pressing the "Enter" key inside input to submit
+        document.getElementById("playerGuess").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                if (document.getElementById("submitBtn").style.display !== "none") {
+                    checkGuess();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
