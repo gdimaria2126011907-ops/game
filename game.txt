@@ -15,7 +15,7 @@ namespace ConsoleGuessingGame
             {
                 PlayGameRound();
 
-                Console.WriteLine("\nWould you like to play another round? (Y/N): ");
+                Console.WriteLine("\ play another round? (Y/N): ");
                 string response = Console.ReadLine()?.Trim().ToUpper();
                 if (response != "Y" && response != "YES")
                 {
@@ -39,7 +39,7 @@ namespace ConsoleGuessingGame
 
             while (!hasGuessedCorrectly)
             {
-                Console.Write("Enter your guess: ");
+                Console.Write("Enter : ");
                 string input = Console.ReadLine();
 
                 // Validate that the user entered a valid number
